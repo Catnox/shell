@@ -1,0 +1,61 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: radubos <radubos@student.42.fr>            +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/05/25 09:08:41 by radubos           #+#    #+#              #
+#    Updated: 2025/06/26 22:18:17 by radubos          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Compiler and flags
+CC      = cc
+CFLAGS  = -Wall -Wextra -Werror -g3 -o3
+
+# Readline includes and libraries (macOS)
+READLINE_DIR = $(shell brew --prefix readline)
+CFLAGS   += -I$(READLINE_DIR)/include
+LDFLAGS  += -L$(READLINE_DIR)/lib
+LDLIBS   += -lreadline -lcurses
+
+# Libraries
+LIBFT_LIB = libft/libft.a
+
+# DIrectories
+SRC_DIR = .
+OBJ_DIR = obj
+
+# Sources and executable
+SRCS    = src/main.c src/builtins/builtins.c src/builtins/env_builtin.c src/builtins/builtin_utils.c src/builtins/builtin_export.c src/utils/env_list.c src/utils/env_utils.c src/utils/error.c src/utils/signal_simple.c src/utils/free_utils.c src/utils/args_utils.c src/utils/export_utils.c src/utils/memory_manager.c src/utils/compatibility.c src/utils/missing_utils.c src/globals.c src/simple_shell.c src/execution/path.c src/parsing/expand_token.c
+OBJS    = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRCS))
+NAME    = minishell
+
+# Default rule
+all: $(LIBFT_LIB) $(NAME)
+
+$(LIBFT_LIB):
+	make -C libft
+
+$(NAME): $(OBJS) $(LIBFT_LIB)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(NAME) $(OBJS) $(LIBFT_LIB) $(LDLIBS)
+
+$(OBJ_DIR)/%.o: %.c | $(OBJ_DIR)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -Iincludes -Ilibft -c $< -o $@
+
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
+clean:
+	rm -f $(OBJ_DIR)/*.o
+	make -C libft clean
+
+fclean: clean
+	rm -f $(NAME)
+	make -C libft fclean
+
+re: fclean all
+
+.PHONY: all clean fclean re
