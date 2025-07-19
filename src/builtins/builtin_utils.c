@@ -61,3 +61,41 @@ void	builtin(t_command *cmd, t_env **my_env, char **env, t_token *tokens)
 		status = handle_builtin(cmd->argv, my_env);
 	g_exit_status = status;
 }
+
+int	is_builtin(char *cmd)
+{
+	if (!cmd)
+		return (0);
+	if (ft_strcmp(cmd, "echo") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "cd") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "pwd") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "export") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "unset") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "env") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "exit") == 0)
+		return (1);
+	return (0);
+}
+
+int	ft_exit_simple(char **argv)
+{
+	int	exit_code;
+
+	printf("exit\n");
+	if (argv[1])
+	{
+		exit_code = ft_atoi(argv[1]);
+		if (exit_code < 0 || exit_code > 255)
+			exit_code = exit_code % 256;
+	}
+	else
+		exit_code = g_exit_status;
+	exit(exit_code);
+	return (0);
+}

@@ -3,118 +3,113 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moritzknoll <moritzknoll@student.42.fr>    +#+  +:+       +#+        */
+/*   By: radubos <radubos@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/27 15:04:11 by mknoll            #+#    #+#             */
-/*   Updated: 2025/06/28 09:09:18 by moritzknoll      ###   ########.fr       */
+/*   Created: 2025/07/19 00:00:00 by radubos           #+#    #+#             */
+/*   Updated: 2025/07/19 00:00:00 by radubos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	**env_to_sorted_array(t_env *env)
+int	ft_env_custom(t_env *env)
 {
-	int		count;
-	char	**arr;
-	int		i;
-	char	*tmp;
+	t_env	*current;
 
-	count = env_size(env);
-	i = 0;
-	arr = malloc(sizeof(char *) * (count + 1));
-	while (env)
+	current = env;
+	while (current)
 	{
-		tmp = ft_strjoin(env->key, "");
-		if (env->value)
-			tmp = ft_strjoin_free(tmp, ft_strjoin("=", env->value));
-		arr[i++] = tmp;
-		env = env->next;
+		if (current->exported && current->value)
+			printf("%s=%s\n", current->key, current->value);
+		current = current->next;
 	}
-	arr[i] = NULL;
-	ft_sort_str_array(arr);
-	return (arr);
+	return (0);
 }
 
-int	ft_export(t_env *env)
+int	ft_unset(t_env **my_env, const char *key)
 {
-	char	**arr;
-	int		i;
-	char	*equal;
+	t_env	*current;
+	t_env	*prev;
 
-	i = 0;
-	arr = env_to_sorted_array(env);
-	if (!arr)
-		return (printf("minishell: export: allocation error\n"), 1);
-	while (arr[i])
+	if (!key || !my_env || !*my_env)
+		return (1);
+	current = *my_env;
+	prev = NULL;
+	while (current)
 	{
-		equal = ft_strchr(arr[i], '=');
-		if (equal)
+		if (ft_strcmp(current->key, key) == 0)
 		{
-			*equal = '\0';
-			printf("declare -x %s=\"%s\"\n", arr[i], equal + 1);
-			*equal = '=';
+			if (prev)
+				prev->next = current->next;
+			else
+				*my_env = current->next;
+			free(current->key);
+			free(current->value);
+			free(current);
+			return (0);
 		}
-		else
-			printf("declare -x %s\n", arr[i]);
-		free(arr[i]);
+		prev = current;
+		current = current->next;
+	}
+	return (0);
+}
+
+int	handle_unset(char **argv, t_env **my_env)
+{
+	int	i;
+	int	result;
+
+	if (!argv[1])
+		return (0);
+	result = 0;
+	i = 1;
+	while (argv[i])
+	{
+		if (ft_unset(my_env, argv[i]) != 0)
+			result = 1;
 		i++;
 	}
-	return (free(arr), 0);
+	return (result);
 }
 
-t_env	*get_env(t_env *env, const char *key)
+int	process_export_arg(char *arg, t_env **my_env)
 {
-	while (env)
+	char	*key;
+	char	*value;
+	char	*equal_sign;
+
+	equal_sign = ft_strchr(arg, '=');
+	if (equal_sign)
 	{
-		if (ft_strcmp(env->key, key) == 0)
-			return (env);
-		env = env->next;
+		*equal_sign = '\0';
+		key = arg;
+		value = equal_sign + 1;
+		set_env_value(my_env, key, value);
+		*equal_sign = '=';
 	}
-	return (NULL);
-}
-
-int	set_env_export_only(t_env **my_env, const char *key)
-{
-	t_env	*var;
-	t_env	*new;
-
-	var = get_env(*my_env, key);
-	if (var)
-		var->exported = 1;
 	else
 	{
-		new = malloc(sizeof(t_env));
-		new->key = ft_strdup(key);
-		new->value = NULL;
-		new->exported = 1;
-		new->next = *my_env;
-		*my_env = new;
+		key = arg;
+		if (!get_env_value(*my_env, key))
+			set_env_value(my_env, key, "");
 	}
 	return (0);
 }
 
 int	handle_export(char **argv, t_env **my_env)
 {
-	char	*eq;
-	char	*key;
-	char	*value;
-	int		res;
-
-	key = NULL;
-	value = NULL;
+	int	i;
+	
 	if (!argv[1])
-		return (ft_export(*my_env));
-	eq = ft_strchr(argv[1], '=');
-	if (eq)
 	{
-		key = ft_substr(argv[1], 0, eq - argv[1]);
-		value = ft_strdup(eq + 1);
-		if (!key || !value)
-			return (free(key), free(value), 1);
-		res = set_env(my_env, key, value);
-		free(key);
-		free(value);
-		return (res);
+		ft_env_custom(*my_env);
+		return (0);
 	}
-	return (set_env_export_only(my_env, argv[1]));
+	i = 1;
+	while (argv[i])
+	{
+		process_export_arg(argv[i], my_env);
+		i++;
+	}
+	return (0);
 }

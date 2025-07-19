@@ -28,7 +28,7 @@ SRC_DIR = .
 OBJ_DIR = obj
 
 # Sources and executable
-SRCS    = src/main.c src/builtins/builtins.c src/builtins/env_builtin.c src/builtins/builtin_utils.c src/builtins/builtin_export.c src/utils/env_list.c src/utils/env_utils.c src/utils/error.c src/utils/signal_simple.c src/utils/free_utils.c src/utils/args_utils.c src/utils/export_utils.c src/utils/memory_manager.c src/utils/compatibility.c src/utils/missing_utils.c src/globals.c src/simple_shell.c src/execution/path.c src/parsing/expand_token.c
+SRCS    = src/main.c src/builtins/builtins.c src/builtins/builtin_utils.c src/builtins/builtin_export.c src/utils/env_list.c src/utils/env_utils.c src/utils/env_utils_advanced.c src/utils/env_node_utils.c src/utils/error.c src/utils/signal_simple.c src/utils/signal_hd.c src/utils/free_utils.c src/utils/args_utils.c src/utils/export_utils.c src/utils/missing_utils.c src/shell/main_loop.c src/parsing/tokenizer.c src/parsing/tokenizer_utils.c src/parsing/token_utils.c src/parsing/expand_token.c src/parsing/expand_utils.c src/redirections/heredoc.c src/redirections/heredoc_utils.c src/redirections/heredoc_read_utils.c src/redirections/heredoc_file_utils.c src/redirections/redirections.c src/redirections/redirect_utils.c src/redirections/redirect_process.c src/execution/pipes.c src/execution/pipe_execution.c src/execution/pipe_utils.c src/execution/pipe_split_utils.c src/execution/redirection_utils.c src/execution/external_commands.c src/execution/command_execution.c src/execution/path.c src/execution/path_utils.c
 OBJS    = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRCS))
 NAME    = minishell
 

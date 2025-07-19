@@ -108,62 +108,14 @@ int	handle_builtin(char **argv, t_env **my_env)
 	else if (ft_strcmp(argv[0], "export") == 0)
 		return (handle_export(argv, my_env));
 	else if (ft_strcmp(argv[0], "unset") == 0)
-		return (ft_unset(my_env, argv[1]));
+		return (handle_unset(argv, my_env));
 	else if (ft_strcmp(argv[0], "env") == 0)
 		return (ft_env_custom(*my_env));
+	else if (ft_strcmp(argv[0], "exit") == 0)
+		return (ft_exit_simple(argv));
 	else
 	{
 		printf("minishell: %s: command not found\n", argv[0]);
 		return (127);
 	}
-}
-
-int	is_builtin(char *cmd)
-{
-	if (!cmd)
-		return (0);
-	
-	if (ft_strcmp(cmd, "echo") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "cd") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "pwd") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "export") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "unset") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "env") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "exit") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "help") == 0)
-		return (1);
-	
-	return (0);
-}
-
-int	builtin_help(void)
-{
-	printf("Minishell - Available commands:\n");
-	printf("  echo [-n] [text...]    - Display text\n");
-	printf("  cd [directory]         - Change directory\n");
-	printf("  pwd                    - Print working directory\n");
-	printf("  export [var[=value]]   - Set environment variable\n");
-	printf("  unset [var]            - Remove environment variable\n");
-	printf("  env                    - Print environment\n");
-	printf("  exit                   - Exit shell\n");
-	printf("  help                   - Show this help\n");
-	return (0);
-}
-
-int	execute_builtin(char **args, t_env *env)
-{
-	(void)env;
-	
-	if (ft_strcmp(args[0], "help") == 0)
-		return (builtin_help());
-	
-	// Les autres builtins sont gérés par handle_builtin
-	return (0);
 }

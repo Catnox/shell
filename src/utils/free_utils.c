@@ -53,6 +53,5 @@ void	cleanup_all(t_token *tokens, t_command *cmd_list,
 		free_env(*env);
 		*env = NULL;
 	}
-	cleanup_heredoc_files();
 	rl_clear_history();
 }

@@ -18,11 +18,9 @@ int	count_args(char **args)
 
 	if (!args)
 		return (0);
-	
 	count = 0;
 	while (args[count])
 		count++;
-	
 	return (count);
 }
 
@@ -34,12 +32,10 @@ char	**dup_args(char **args)
 
 	if (!args)
 		return (NULL);
-	
 	count = count_args(args);
 	new_args = malloc(sizeof(char *) * (count + 1));
 	if (!new_args)
 		return (NULL);
-	
 	i = 0;
 	while (i < count)
 	{
@@ -52,7 +48,6 @@ char	**dup_args(char **args)
 		i++;
 	}
 	new_args[count] = NULL;
-	
 	return (new_args);
 }
 
@@ -62,7 +57,6 @@ void	free_args(char **args)
 
 	if (!args)
 		return ;
-	
 	i = 0;
 	while (args[i])
 	{
