@@ -66,3 +66,26 @@ void	append_char(char c, char **output)
 	temp[1] = '\0';
 	append_str(temp, output);
 }
+
+void	handle_dollar(char *input, int *i, char **output, t_env *my_env)
+{
+	char	*exit_status_str;
+	char	*var_value;
+
+	(*i)++;
+	if (input[*i] == '?')
+	{
+		exit_status_str = ft_itoa(g_exit_status);
+		append_str(exit_status_str, output);
+		free(exit_status_str);
+		(*i)++;
+	}
+	else if (ft_isalpha(input[*i]) || input[*i] == '_')
+	{
+		var_value = get_variable_value(input, i, my_env);
+		append_str(var_value, output);
+		free(var_value);
+	}
+	else
+		append_char('$', output);
+}

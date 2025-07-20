@@ -1,26 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_utils.c                                       :+:      :+:    :+:   */
+/*   ft_tabdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: radubos <radubos@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/17 00:00:00 by radubos           #+#    #+#             */
-/*   Updated: 2025/07/17 00:00:00 by radubos          ###   ########.fr       */
+/*   Created: 2025/07/20 00:00:00 by radubos           #+#    #+#             */
+/*   Updated: 2025/07/20 00:00:00 by radubos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void	free_command_list(t_command *cmd)
+char	**ft_tabdup(char **tab)
 {
-	t_command	*next;
+	char	**new_tab;
+	int		count;
+	int		i;
 
-	while (cmd)
+	if (!tab)
+		return (NULL);
+	count = ft_tablen(tab);
+	new_tab = malloc(sizeof(char *) * (count + 1));
+	if (!new_tab)
+		return (NULL);
+	i = 0;
+	while (i < count)
 	{
-		next = cmd->next;
-		ft_free_tab(cmd->argv);
-		free(cmd);
-		cmd = next;
+		new_tab[i] = ft_strdup(tab[i]);
+		if (!new_tab[i])
+		{
+			ft_free_tab(new_tab);
+			return (NULL);
+		}
+		i++;
 	}
+	new_tab[count] = NULL;
+	return (new_tab);
 }

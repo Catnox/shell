@@ -21,21 +21,6 @@ int	update_existing_env(t_env *current, char *value)
 	return (SUCCESS);
 }
 
-int	create_new_env_node(t_env **env_list, char *key, char *value)
-{
-	t_env	*new_node;
-
-	new_node = malloc(sizeof(t_env));
-	if (!new_node)
-		return (FAILURE);
-	new_node->key = ft_strdup(key);
-	new_node->value = ft_strdup(value ? value : "");
-	new_node->exported = 1;
-	new_node->next = *env_list;
-	*env_list = new_node;
-	return (SUCCESS);
-}
-
 int	count_exported_vars(t_env *env_list)
 {
 	t_env	*current;
@@ -84,4 +69,16 @@ int	fill_env_array(char **env_array, t_env *env_list, int count)
 	}
 	env_array[i] = NULL;
 	return (i);
+}
+
+void	remove_env_node(t_env **env_list, t_env *current, t_env *prev)
+{
+	if (prev)
+		prev->next = current->next;
+	else
+		*env_list = current->next;
+	free(current->key);
+	if (current->value)
+		free(current->value);
+	free(current);
 }

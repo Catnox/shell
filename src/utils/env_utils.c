@@ -61,6 +61,7 @@ void	free_env_list(t_env *env_list)
 int	set_env_value(t_env **env_list, char *key, char *value)
 {
 	t_env	*current;
+	t_env	*new_node;
 
 	if (!env_list || !key)
 		return (FAILURE);
@@ -71,7 +72,12 @@ int	set_env_value(t_env **env_list, char *key, char *value)
 			return (update_existing_env(current, value));
 		current = current->next;
 	}
-	return (create_new_env_node(env_list, key, value));
+	new_node = create_env_node(key, value);
+	if (!new_node)
+		return (FAILURE);
+	new_node->next = *env_list;
+	*env_list = new_node;
+	return (SUCCESS);
 }
 
 int	unset_env_value(t_env **env_list, char *key)

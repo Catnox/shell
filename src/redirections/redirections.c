@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	handle_heredoc_redirect(t_simple_data *data, int i)
+int	handle_heredoc_redirect(t_data *data, int i)
 {
 	char	*heredoc_file;
 	int		saved_stdin;
@@ -32,7 +32,7 @@ int	handle_heredoc_redirect(t_simple_data *data, int i)
 	return (1);
 }
 
-int	handle_output_redirect(t_simple_data *data, int i, int append)
+int	handle_output_redirect(t_data *data, int i, int append)
 {
 	int	fd;
 
@@ -47,7 +47,7 @@ int	handle_output_redirect(t_simple_data *data, int i, int append)
 	return (1);
 }
 
-int	handle_input_redirect(t_simple_data *data, int i)
+int	handle_input_redirect(t_data *data, int i)
 {
 	int	fd;
 
@@ -66,7 +66,7 @@ int	handle_input_redirect(t_simple_data *data, int i)
 	return (1);
 }
 
-int	process_redirections(t_simple_data *data)
+int	process_redirections(t_data *data)
 {
 	int	i;
 	int	result;

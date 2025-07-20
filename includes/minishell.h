@@ -38,49 +38,6 @@
 # define FAILURE 1
 # define ERROR 2
 
-/* Token types */
-typedef enum e_token_type
-{
-	WORD,
-	PIPE,
-	R_IN,
-	R_OUT,
-	R_APPEND,
-	HEREDOC,
-	AND,
-	OR,
-	SEMICOLON,
-	LPAREN,
-	RPAREN
-}	e_token_type;
-
-/* Quote types */
-typedef enum e_quote_type
-{
-	NO_QUOTE,
-	SINGLE_QUOTE,
-	DOUBLE_QUOTE
-}	e_quote_type;
-
-/* Token structure */
-typedef struct s_token
-{
-	e_token_type		type;
-	char				*value;
-	e_quote_type		quote_type;
-	int					has_space_before;
-	struct s_token		*next;
-}	t_token;
-
-/* Token data for creation */
-typedef struct s_token_data
-{
-	char			*value;
-	e_token_type	type;
-	e_quote_type	quote_type;
-	int				has_space_before;
-}	t_token_data;
-
 /* Environment variable structure */
 typedef struct s_env
 {
@@ -116,13 +73,13 @@ typedef struct s_redir
 }	t_redir;
 
 /* Simple data structure for direct execution */
-typedef struct s_simple_data
+typedef struct s_data
 {
 	char	*line;
 	char	**tokens;
 	char	**args;
 	t_env	*env;
-}	t_simple_data;
+}	t_data;
 
 /* Global variable for signal handling */
 extern int	g_exit_status;
@@ -131,23 +88,22 @@ extern int	g_exit_status;
 
 /* Main functions */
 int		main(int argc, char **argv, char **envp);
-void	minishell_loop(t_env **my_env, char **envp);
 
 /* Simple shell functions */
-void	simple_minishell_loop(t_env *env);
+void	minishell_loop(t_env *env);
 void	launch_extern_command_simple(char **args, t_env *env);
 char	*prepare_command_path(char **args, t_env *env);
 void	execute_child_process(char **args, char *path, t_env *env);
 void	handle_parent_process(pid_t pid, char *path, int *status);
-void	execute_pipe_commands(t_simple_data *data, int pipe_count);
-void	execute_builtin_with_redirections(t_simple_data *data);
-void	simple_execute(t_simple_data *data);
+void	execute_pipe_commands(t_data *data, int pipe_count);
+void	execute_builtin_with_redirections(t_data *data);
+void	execute(t_data *data);
 
 /* Shell main loop */
 int		is_empty_line(char *line);
 
 /* Tokenizer functions */
-char	**simple_tokenize(char *line);
+char	**tokenize(char *line);
 char	*expand_and_parse_token(char *input, t_env *my_env);
 char	*heredoc_tmp(void);
 void	handle_single_quote(char *input, int *i, int *in_single_quotes, 
@@ -169,10 +125,10 @@ void	tokenize_line(char *line, char **tokens);
 
 /* Redirection functions */
 char	*handle_heredoc(char *delimiter);
-int		handle_heredoc_redirect(t_simple_data *data, int i);
-int		handle_output_redirect(t_simple_data *data, int i, int append);
-int		handle_input_redirect(t_simple_data *data, int i);
-int		process_redirections(t_simple_data *data);
+int		handle_heredoc_redirect(t_data *data, int i);
+int		handle_output_redirect(t_data *data, int i, int append);
+int		handle_input_redirect(t_data *data, int i);
+int		process_redirections(t_data *data);
 int		hd_is_end(char *line, char *delim);
 void	hd_write(int fd, char *line);
 int		create_tmp_heredoc_file(char **filename);
@@ -180,12 +136,12 @@ int		should_cleanup_file(int ret);
 void	setup_heredoc_signals(struct sigaction *old_int, int *saved);
 void	cleanup_heredoc_signals(const struct sigaction *old_int, 
 		int saved, int ret, char *delimiter);
-void	remove_redirect_args(t_simple_data *data, int i);
+void	remove_redirect_args(t_data *data, int i);
 int		setup_heredoc_fd(char *heredoc_file, int *saved_stdin);
 void	cleanup_heredoc_redirect(int saved_stdin, char *heredoc_file);
 int		open_output_file(char *filename, int append);
-int		validate_redirect_args(t_simple_data *data, int i);
-int		process_single_redirect(t_simple_data *data, int i);
+int		validate_redirect_args(t_data *data, int i);
+int		process_single_redirect(t_data *data, int i);
 int		fill_buffer(int fd, char *buffer, int *buffer_pos, int *buffer_size);
 int		read_character_to_line(char *buffer, int *buffer_pos, 
 		char *line, int *line_len);
@@ -216,7 +172,7 @@ int		handle_append_redirection(char **cmd, int i);
 int		handle_input_redirection(char **cmd, int i);
 
 /* Execution functions */
-void	simple_execute(t_simple_data *data);
+void	execute(t_data *data);
 
 /* Path and execution utilities */
 char	*find_command_path(char *cmd, t_env *env);
@@ -232,7 +188,6 @@ int		handle_builtin(char **argv, t_env **my_env);
 int		is_builtin(char *cmd);
 int		ft_cd(char **argv, t_env **env);
 int		ft_exit_simple(char **argv);
-void	ft_exit(char **argv, t_env **env, t_token *tokens, t_command *cmd_list);
 int		ft_pwd(char **argv);
 int		ft_echo(char **argv);
 int		ft_echo_n(char **argv);
@@ -251,11 +206,11 @@ int		unset_env_value(t_env **env_list, char *key);
 char	**env_to_array(t_env *env_list);
 int		count_exported_vars(t_env *env_list);
 int		update_existing_env(t_env *current, char *value);
-int		create_new_env_node(t_env **env_list, char *key, char *value);
 int		fill_env_array(char **env_array, t_env *env_list, int count);
 void	remove_env_node(t_env **env_list, t_env *current, t_env *prev);
 t_env	*find_env_node(t_env *env_list, char *key, t_env **prev);
-void	free_env(t_env *env);
+t_env	*create_env_node(const char *key, const char *value);
+void	free_env_list(t_env *env_list);
 
 /* Token expansion functions */
 char	*get_variable_value_from_env(t_env *my_env, char *var_name);
@@ -263,8 +218,6 @@ char	*get_variable_value(char *input, int *i, t_env *my_env);
 void	append_str(const char *str, char **output);
 void	append_char(char c, char **output);
 void	handle_dollar(char *input, int *i, char **output, t_env *my_env);
-char	*expand_token(t_token *token, t_env *my_env);
-void	expand_tokens(t_token *tokens, t_env *env);
 
 /* Signal handling functions */
 void	disable_echoctl(void);
@@ -273,13 +226,8 @@ void	hd_set_signals(struct sigaction *old_int);
 void	hd_restore_signals(const struct sigaction *old_int);
 
 /* Utility functions */
-void	free_args(char **args);
-void	free_tokens(t_token *head);
-void	cleanup_all(t_token *tokens, t_command *cmd_list, char *line,
-			t_env **env);
 void	print_error(char *cmd, char *msg);
 void	handle_status_and_print(int status);
-void	ft_free_tab(char **tab);
 
 /* Signal handling functions */
 void	init_signals_prompt(void);

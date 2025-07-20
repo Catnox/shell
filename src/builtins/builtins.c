@@ -41,21 +41,6 @@ int	ft_cd(char **argv, t_env **env)
 	return (0);
 }
 
-void	ft_exit(char **argv, t_env **env, t_token *tokens, t_command *cmd_list)
-{
-	char	*line;
-
-	line = NULL;
-	if (argv[1])
-		perror("exit: too many arguments\n");
-	else
-	{
-		printf("exit\n");
-		cleanup_all(tokens, cmd_list, line, env);
-		exit(0);
-	}
-}
-
 int	ft_pwd(char **argv)
 {
 	char	cwd[1024];
@@ -115,7 +100,7 @@ int	handle_builtin(char **argv, t_env **my_env)
 		return (ft_exit_simple(argv));
 	else
 	{
-		printf("minishell: %s: command not found\n", argv[0]);
+		print_error(argv[0], "command not found\n");
 		return (127);
 	}
 }

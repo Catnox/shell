@@ -14,10 +14,8 @@
 
 char	*find_command_in_standard_paths(char *cmd)
 {
-	char	*standard_paths[] = {
-		"/bin", "/usr/bin", "/usr/local/bin",
-		"/opt/homebrew/bin", "/opt/local/bin", NULL
-	};
+	char	*standard_paths[] = {"/bin", "/usr/bin", "/usr/local/bin",
+		"/opt/homebrew/bin", "/opt/local/bin", NULL};
 	char	*full_path;
 	char	*result;
 	int		i;

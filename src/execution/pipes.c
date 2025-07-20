@@ -61,7 +61,7 @@ void	free_commands(char ***commands)
 	i = 0;
 	while (commands[i])
 	{
-		free_args(commands[i]);
+		ft_free_tab(commands[i]);
 		i++;
 	}
 	free(commands);

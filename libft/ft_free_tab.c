@@ -1,31 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_utils.c                                    :+:      :+:    :+:   */
+/*   ft_free_tab.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: radubos <radubos@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/17 00:00:00 by radubos           #+#    #+#             */
-/*   Updated: 2025/07/17 00:00:00 by radubos          ###   ########.fr       */
+/*   Created: 2025/07/20 00:00:00 by radubos           #+#    #+#             */
+/*   Updated: 2025/07/20 00:00:00 by radubos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	hd_is_end(char *line, char *delim)
+void	ft_free_tab(char **tab)
 {
-	char	*nl;
+	int	i;
 
-	nl = ft_strchr(line, '\n');
-	if (nl)
-		*nl = '\0';
-	if (ft_strcmp(line, delim) == 0)
-		return (1);
-	return (0);
-}
-
-void	hd_write(int fd, char *line)
-{
-	write(fd, line, ft_strlen(line));
-	write(fd, "\n", 1);
+	if (!tab)
+		return ;
+	i = 0;
+	while (tab[i])
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
 }

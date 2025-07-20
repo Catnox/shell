@@ -47,21 +47,6 @@ int	ft_echo_n(char **argv)
 	return (0);
 }
 
-void	builtin(t_command *cmd, t_env **my_env, char **env, t_token *tokens)
-{
-	int	status;
-
-	status = 0;
-	(void)env;
-	if (!cmd->argv[0])
-		return ;
-	if (ft_strcmp(cmd->argv[0], "exit") == 0)
-		ft_exit(cmd->argv, my_env, tokens, cmd);
-	else
-		status = handle_builtin(cmd->argv, my_env);
-	g_exit_status = status;
-}
-
 int	is_builtin(char *cmd)
 {
 	if (!cmd)

@@ -71,30 +71,3 @@ void	execute_pipe_chain(char ***commands, int cmd_count, t_env *env)
 	cleanup_pipes(pipes, cmd_count);
 	wait_for_children(pids, cmd_count);
 }
-
-char	**create_command_from_args(char **args, int start, int end)
-{
-	char	**command;
-	int		arg_index;
-
-	command = malloc(sizeof(char *) * (end - start + 1));
-	if (!command)
-		return (NULL);
-	arg_index = 0;
-	while (start < end)
-	{
-		command[arg_index] = ft_strdup(args[start]);
-		arg_index++;
-		start++;
-	}
-	command[arg_index] = NULL;
-	return (command);
-}
-
-void	process_pipe_segment(char ***commands, char **args, int *cmd_index, 
-		int *start, int i)
-{
-	commands[*cmd_index] = create_command_from_args(args, *start, i);
-	(*cmd_index)++;
-	*start = i + 1;
-}

@@ -36,7 +36,7 @@ void	execute_child_process(char **args, char *path, t_env *env)
 	if (execve(path, args, env_array) == -1)
 	{
 		perror("execve");
-		free_args(env_array);
+		ft_free_tab(env_array);
 		free(path);
 		exit(127);
 	}

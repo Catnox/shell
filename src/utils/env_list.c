@@ -89,28 +89,18 @@ char	*get_env_value(t_env *env_list, char *key)
 	return (NULL);
 }
 
-void	free_env(t_env *env)
+t_env	*find_env_node(t_env *env_list, char *key, t_env **prev)
 {
 	t_env	*current;
-	t_env	*next;
 
-	current = env;
-	if (!env)
-		return ;
+	current = env_list;
+	*prev = NULL;
 	while (current)
 	{
-		next = current->next;
-		if (current->key)
-		{
-			free(current->key);
-			current->key = NULL;
-		}
-		if (current->value)
-		{
-			free(current->value);
-			current->value = NULL;
-		}
-		free(current);
-		current = next;
+		if (ft_strcmp(current->key, key) == 0)
+			return (current);
+		*prev = current;
+		current = current->next;
 	}
+	return (NULL);
 }

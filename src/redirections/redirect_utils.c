@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	remove_redirect_args(t_simple_data *data, int i)
+void	remove_redirect_args(t_data *data, int i)
 {
 	char	*redirect_op;
 	char	*filename;
@@ -76,11 +76,11 @@ int	open_output_file(char *filename, int append)
 	return (fd);
 }
 
-int	validate_redirect_args(t_simple_data *data, int i)
+int	validate_redirect_args(t_data *data, int i)
 {
 	if (!data->args[i + 1])
 	{
-		printf("minishell: syntax error near unexpected token `newline'\n");
+		print_error("minishell", "syntax error near unexpected token `newline'\n");
 		g_exit_status = 2;
 		return (0);
 	}

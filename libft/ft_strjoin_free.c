@@ -1,26 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   ft_strjoin_free.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: radubos <radubos@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/17 00:00:00 by radubos           #+#    #+#             */
-/*   Updated: 2025/07/17 00:00:00 by radubos          ###   ########.fr       */
+/*   Created: 2025/07/20 00:00:00 by radubos           #+#    #+#             */
+/*   Updated: 2025/07/20 00:00:00 by radubos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void	print_error(char *cmd, char *msg)
+char	*ft_strjoin_free(char *s1, const char *s2)
 {
-	ft_putstr_fd("minishell: ", STDERR_FILENO);
-	if (cmd)
-	{
-		ft_putstr_fd(cmd, STDERR_FILENO);
-		ft_putstr_fd(": ", STDERR_FILENO);
-	}
-	if (msg)
-		ft_putstr_fd(msg, STDERR_FILENO);
-	ft_putchar_fd('\n', STDERR_FILENO);
+	char	*result;
+
+	result = ft_strjoin(s1, s2);
+	if (s1)
+		free(s1);
+	return (result);
 }

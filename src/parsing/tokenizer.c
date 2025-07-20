@@ -41,7 +41,7 @@ char	**allocate_tokens_array(char *line)
 
 	if (check_unclosed_quotes(line))
 	{
-		printf("minishell: syntax error: unclosed quotes\n");
+		print_error("minishell", "syntax error: unclosed quotes\n");
 		return (NULL);
 	}
 	count = count_tokens(line);
@@ -68,7 +68,7 @@ void	tokenize_line(char *line, char **tokens)
 	tokens[count] = NULL;
 }
 
-char	**simple_tokenize(char *line)
+char	**tokenize(char *line)
 {
 	char	**tokens;
 

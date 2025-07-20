@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	execute_pipe_commands(t_simple_data *data, int pipe_count)
+void	execute_pipe_commands(t_data *data, int pipe_count)
 {
 	char	***commands;
 
@@ -24,7 +24,7 @@ void	execute_pipe_commands(t_simple_data *data, int pipe_count)
 	}
 }
 
-void	execute_builtin_with_redirections(t_simple_data *data)
+void	execute_builtin_with_redirections(t_data *data)
 {
 	int	saved_stdout;
 	int	saved_stdin;
@@ -46,7 +46,7 @@ void	execute_builtin_with_redirections(t_simple_data *data)
 	close(saved_stdin);
 }
 
-void	simple_execute(t_simple_data *data)
+void	execute(t_data *data)
 {
 	int	pipe_count;
 	
