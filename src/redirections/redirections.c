@@ -28,7 +28,8 @@ int	handle_heredoc_redirect(t_data *data, int i)
 	if (setup_heredoc_fd(heredoc_file, &saved_stdin) == -1)
 		return (0);
 	remove_redirect_args(data, i);
-	cleanup_heredoc_redirect(saved_stdin, heredoc_file);
+	close(saved_stdin);
+	free(heredoc_file);
 	return (1);
 }
 
@@ -78,8 +79,9 @@ int	process_redirections(t_data *data)
 		if (result == 0)
 			return (0);
 		if (result == 1)
-			break;
-		i++;
+			i = 0;
+		else
+			i++;
 	}
 	return (1);
 }

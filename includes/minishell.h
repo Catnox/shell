@@ -125,6 +125,12 @@ void	tokenize_line(char *line, char **tokens);
 
 /* Redirection functions */
 char	*handle_heredoc(char *delimiter);
+char	*read_line_interactive(void);
+char	*read_line_simple(int fd);
+char	*get_heredoc_line(int is_interactive);
+char	*init_simple_line(int *line_len);
+char	*init_line_buffer(void);
+void	reset_buffer_state(int *buffer_pos, int *buffer_size);
 int		handle_heredoc_redirect(t_data *data, int i);
 int		handle_output_redirect(t_data *data, int i, int append);
 int		handle_input_redirect(t_data *data, int i);
@@ -193,6 +199,8 @@ int		ft_echo(char **argv);
 int		ft_echo_n(char **argv);
 int		check_multiple_n(char *str);
 int		ft_env_custom(t_env *env);
+char	**export_env_to_array(t_env *env);
+int		ft_env_sorted(t_env *env);
 int		handle_export(char **argv, t_env **my_env);
 int		process_export_arg(char *arg, t_env **my_env);
 int		handle_unset(char **argv, t_env **my_env);

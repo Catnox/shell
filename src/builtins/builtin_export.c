@@ -102,7 +102,7 @@ int	handle_export(char **argv, t_env **my_env)
 	
 	if (!argv[1])
 	{
-		ft_env_custom(*my_env);
+		ft_env_sorted(*my_env);
 		return (0);
 	}
 	i = 1;

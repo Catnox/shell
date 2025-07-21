@@ -80,7 +80,7 @@ int	validate_redirect_args(t_data *data, int i)
 {
 	if (!data->args[i + 1])
 	{
-		print_error("minishell", "syntax error near unexpected token `newline'\n");
+		print_error("minishell", "syntax error near unexpected token `newline'");
 		g_exit_status = 2;
 		return (0);
 	}

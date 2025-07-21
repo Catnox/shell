@@ -36,13 +36,10 @@ void	setup_heredoc_signals(struct sigaction *old_int, int *saved)
 void	cleanup_heredoc_signals(const struct sigaction *old_int, 
 		int saved, int ret, char *delimiter)
 {
+	(void)ret;
+	(void)delimiter;
 	enable_echoctl();
 	hd_restore_signals(old_int);
-	if (ret == 1 && g_exit_status != 130)
-	{
-		printf("\nminishell: warning: here-document delimited by end-of-file ");
-		printf("(wanted `%s')\n", delimiter);
-	}
 	if (g_exit_status != 130)
 		g_exit_status = saved;
 }

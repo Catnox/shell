@@ -60,6 +60,17 @@ char	*allocate_line_buffer(void)
 	return (line);
 }
 
+char	*init_line_buffer(void)
+{
+	char	*line;
+
+	line = malloc(128);
+	if (!line)
+		return (NULL);
+	write(STDOUT_FILENO, "> ", 2);
+	return (line);
+}
+
 int	process_line_reading(int fd, char *buffer, int *buffer_pos, 
 		int *buffer_size, char *line, int *line_len)
 {

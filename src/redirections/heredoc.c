@@ -12,25 +12,7 @@
 
 #include "minishell.h"
 
-int	hd_is_end(char *line, char *delim)
-{
-	char	*nl;
-
-	nl = ft_strchr(line, '\n');
-	if (nl)
-		*nl = '\0';
-	if (ft_strcmp(line, delim) == 0)
-		return (1);
-	return (0);
-}
-
-void	hd_write(int fd, char *line)
-{
-	write(fd, line, ft_strlen(line));
-	write(fd, "\n", 1);
-}
-
-static char	*read_line_simple(int fd)
+char	*read_line_simple(int fd)
 {
 	static char	buffer[4096];
 	static int	buffer_pos = 0;
@@ -38,13 +20,15 @@ static char	*read_line_simple(int fd)
 	char		*line;
 	int			line_len;
 
-	line = allocate_line_buffer();
+	if (buffer_size < 0)
+		reset_buffer_state(&buffer_pos, &buffer_size);
+	line = init_simple_line(&line_len);
 	if (!line)
 		return (NULL);
-	line_len = 0;
 	if (!process_line_reading(fd, buffer, &buffer_pos, &buffer_size, 
 			line, &line_len))
 	{
+		reset_buffer_state(&buffer_pos, &buffer_size);
 		free(line);
 		return (NULL);
 	}
@@ -52,28 +36,53 @@ static char	*read_line_simple(int fd)
 	return (line);
 }
 
+static int	check_delimiter_match(char *line, char *delim, int is_interactive)
+{
+	if ((is_interactive && ft_strcmp(line, delim) == 0) ||
+		(!is_interactive && hd_is_end(line, delim)))
+		return (1);
+	return (0);
+}
+
+static int	process_heredoc_line(char *line, char *delim, int fd, int is_interactive)
+{
+	if (g_exit_status == 130)
+	{
+		if (line)
+			free(line);
+		return (-1);
+	}
+	if (!line)
+		return (1);
+	if (check_delimiter_match(line, delim, is_interactive))
+	{
+		free(line);
+		return (2);
+	}
+	hd_write(fd, line);
+	free(line);
+	return (0);
+}
+
 static int	heredoc_loop(char *delim, int fd)
 {
 	char	*line;
+	int		is_interactive;
+	int		result;
 
+	is_interactive = isatty(STDIN_FILENO);
 	while (1)
 	{
-		write(STDOUT_FILENO, "> ", 2);
-		line = read_line_simple(STDIN_FILENO);
-		if (!line)
-			return (1);
 		if (g_exit_status == 130)
-		{
-			free(line);
 			return (-1);
-		}
-		if (hd_is_end(line, delim))
-		{
-			free(line);
+		line = get_heredoc_line(is_interactive);
+		result = process_heredoc_line(line, delim, fd, is_interactive);
+		if (result == -1)
+			return (-1);
+		if (result == 1)
+			return (1);
+		if (result == 2)
 			break;
-		}
-		hd_write(fd, line);
-		free(line);
 	}
 	return (0);
 }

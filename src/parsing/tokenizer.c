@@ -41,7 +41,7 @@ char	**allocate_tokens_array(char *line)
 
 	if (check_unclosed_quotes(line))
 	{
-		print_error("minishell", "syntax error: unclosed quotes\n");
+		print_error("minishell", "syntax error: unclosed quotes");
 		return (NULL);
 	}
 	count = count_tokens(line);

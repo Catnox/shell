@@ -22,7 +22,7 @@ char	*prepare_pipe_command_path(char **cmd, t_env *env)
 		path = find_command_path(cmd[0], env);
 	if (!path)
 	{
-		print_error(cmd[0], "command not found\n");
+		print_error(cmd[0], "command not found");
 		exit(127);
 	}
 	return (path);
@@ -37,7 +37,7 @@ void	execute_external_pipe_command(char **cmd, t_env *env)
 	env_array = env_to_array(env);
 	if (execve(path, cmd, env_array) == -1)
 	{
-		perror("execve");
+		print_error(cmd[0], "No such file or directory");
 		exit(127);
 	}
 }

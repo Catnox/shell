@@ -80,6 +80,11 @@ int	process_cmd_redirections(char **cmd)
 			return (handle_append_redirection(cmd, i));
 		else if (ft_strcmp(cmd[i], "<") == 0 && cmd[i + 1])
 			return (handle_input_redirection(cmd, i));
+		else if (ft_strcmp(cmd[i], "<<") == 0 && cmd[i + 1])
+		{
+			i += 2;
+			continue;
+		}
 		i++;
 	}
 	return (1);

@@ -17,6 +17,8 @@ int	check_multiple_n(char *str)
 	char	valid;
 	int		i;
 
+	if (!str)
+		return (0);
 	i = 0;
 	valid = 'n';
 	while (str[i] && ft_strcmp(str, "-n"))
@@ -65,6 +67,30 @@ int	is_builtin(char *cmd)
 		return (1);
 	if (ft_strcmp(cmd, "exit") == 0)
 		return (1);
+	return (0);
+}
+
+int	ft_echo(char **argv)
+{
+	int	i;
+	int	newline;
+
+	newline = 1;
+	i = 1;
+	if (argv[1] && ft_strcmp(argv[1], "-n") == 0)
+	{
+		newline = 0;
+		i++;
+	}
+	while (argv[i])
+	{
+		printf("%s", argv[i]);
+		if (argv[i + 1])
+			printf(" ");
+		i++;
+	}
+	if (newline)
+		printf("\n");
 	return (0);
 }
 

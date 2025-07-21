@@ -19,7 +19,13 @@ void	execute_pipe_command(char **cmd, t_env *env)
 	if (!cmd[0])
 		exit(0);
 	if (is_builtin(cmd[0]))
-		handle_builtin(cmd, &env);
+	{
+		int exit_code;
+		if (ft_strcmp(cmd[0], "exit") == 0)
+			exit(0);
+		exit_code = handle_builtin(cmd, &env);
+		exit(exit_code);
+	}
 	else
 		execute_external_pipe_command(cmd, env);
 }

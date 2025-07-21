@@ -28,6 +28,7 @@ void	execute_builtin_with_redirections(t_data *data)
 {
 	int	saved_stdout;
 	int	saved_stdin;
+	int	exit_code;
 
 	saved_stdout = dup(STDOUT_FILENO);
 	saved_stdin = dup(STDIN_FILENO);
@@ -37,9 +38,11 @@ void	execute_builtin_with_redirections(t_data *data)
 		dup2(saved_stdin, STDIN_FILENO);
 		close(saved_stdout);
 		close(saved_stdin);
+		g_exit_status = 1;
 		return;
 	}
-	handle_builtin(data->args, &data->env);
+	exit_code = handle_builtin(data->args, &data->env);
+	g_exit_status = exit_code;
 	dup2(saved_stdout, STDOUT_FILENO);
 	dup2(saved_stdin, STDIN_FILENO);
 	close(saved_stdout);
